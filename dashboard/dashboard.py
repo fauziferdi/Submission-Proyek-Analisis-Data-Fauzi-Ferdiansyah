@@ -8,14 +8,14 @@ sns.set(style="dark")
 
 # Fungsi data penyewaan per musim
 def create_seasonal_rentals_df(df_day):
-    seasonal_rentals_df = df_day.groupby("season")["cnt"].sum().reset_index()
+    seasonal_rentals_df = df_day.groupby("season")["cnt"].sum().sort_values(ascending=False).reset_index()
     seasonal_rentals_df.rename(columns={"cnt": "total_rentals"}, inplace=True)
     return seasonal_rentals_df
 
 
 # Fungsi data penyewaan per bulan
 def create_monthly_rentals_df(df_day):
-    monthly_rentals_df = df_day.groupby("mnth")["cnt"].sum().reset_index()
+    monthly_rentals_df = df_day.groupby("mnth")["cnt"].sum().sort_values(ascending=False).reset_index()
     monthly_rentals_df.rename(
         columns={"cnt": "total_rentals", "mnth": "month"}, inplace=True
     )
@@ -34,7 +34,7 @@ def create_period_rentals_df(df_hour):
 
     df_hour["period"] = df_hour["hr"].apply(time_period)
     period_rentals_df = (
-        df_hour.groupby("period")["cnt"].sum().sort_values(ascending=True).reset_index()
+        df_hour.groupby("period")["cnt"].sum().sort_values(ascending=False).reset_index()
     )
     period_rentals_df.rename(columns={"cnt": "total_rentals"}, inplace=True)
     return period_rentals_df
@@ -105,7 +105,7 @@ st.write("Grafik di atas menunjukkan total jumlah penyewaan sepeda untuk setiap 
 st.header("Total Bike Rentals by Period")
 
 fig, ax = plt.subplots(figsize=(8, 5))
-sns.lineplot(x="period", y="total_rentals", data=period_rentals_df, ax=ax, marker="o")
+sns.barplot(x="period", y="total_rentals", data=period_rentals_df, ax=ax)
 ax.set_title("Total Bike Rentals by Period")
 ax.set_xlabel("Period")
 ax.set_ylabel("Total Rentals")
